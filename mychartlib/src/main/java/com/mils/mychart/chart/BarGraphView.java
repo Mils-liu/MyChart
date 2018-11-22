@@ -25,6 +25,7 @@ public class BarGraphView extends View{
     Path path;
     Paint paint;
     Paint textPaint;
+    String[] datas;
     float[] values;/*传入的数值*/
     float max = 0;/*最大数值*/
 
@@ -43,10 +44,14 @@ public class BarGraphView extends View{
         this.values = values;
     }
 
+    public void setData(String[] datas){
+        this.datas = datas;
+    }
+
     private void init(){
         /*获取最大数值*/
         for (float value : values) {
-            if(value > max){
+            if(value >= max){
                 max = value;
             }
         }
@@ -61,7 +66,7 @@ public class BarGraphView extends View{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (values.length>0){
+        if (values.length>0 && values.length==datas.length){
             init();
             /*绘制xy轴*/
             path = new Path();
@@ -85,6 +90,7 @@ public class BarGraphView extends View{
             float top = 0;
             float right = 0;
             float bottom = 0;
+            int i = 0;
             for (float value : values) {
                 left = startXposition;
                 top = startYposition - value/max * maxHeight;
@@ -92,8 +98,9 @@ public class BarGraphView extends View{
                 bottom = startYposition;
                 canvas.drawRect(left,top,right,bottom,paint);
                 canvas.drawText(String.valueOf(value),startXposition+bgWidth/2,top-margin/2,textPaint);
-                canvas.drawText(String.valueOf(value),startXposition+bgWidth/2,startYposition+margin*3/2,textPaint);
+                canvas.drawText(datas[i],startXposition+bgWidth/2,startYposition+margin*3/2,textPaint);
                 startXposition = startXposition + spacing + bgWidth;
+                i++;
             }
         }
     }

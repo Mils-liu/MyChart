@@ -28,8 +28,7 @@ public class PieChartView extends View{
     /*颜色*/
     int[] colors = {ChartColor.PEACOCKBLUE,ChartColor.TOMATORED,ChartColor.TURKEYJADE,ChartColor.MINT,ChartColor.LAKEPURPLE};
     final int textColor = Color.GRAY;/*文字颜色*/
-    final float stripValue1 = DensityUtil.px2dip(getContext(),100);/*第一折线长度*/
-    final float stripValue2 = DensityUtil.px2dip(getContext(),100);/*第二折线长度*/
+    float stripValue = DensityUtil.dip2px(getContext(),8);/*第二折线长度*/
     float[] values;/*传入的数值*/
     float maxValue = 0;/*最大值*/
     int maxIndex;/*最大值的下标*/
@@ -38,7 +37,14 @@ public class PieChartView extends View{
     float angle=0;/*划过的角度*/
     float xOffset=0;/*最大圆饼的x轴偏移*/
     float yOffset=0;/*最大圆饼的y轴偏移*/
-    float offset=DensityUtil.px2dip(getContext(),40);
+    float text2strip = 0;
+    final float PIE_PERCENT = 0.25f;
+    final float STRIP2_PERCENT = 0.07f;
+    final float OFFSET_PERCENT = 0.05f;
+    final float TEXT_PERCENT = 0.1f;
+    final float TEXT2STRIP_PERCENT = 0.01f;
+    float offset=0;
+    float textSize = 0;
 
     public void setValues(float[] values) {
         this.values = values;
@@ -58,10 +64,12 @@ public class PieChartView extends View{
     private void init(){
         Log.d(TAG,"init");
         sum = 0;
+        startAngle = 0;
+        endAngle = 0;
         /*获取数值总和，最大数值及其下标*/
         for (int i=0;i<values.length;i++) {
             sum+=values[i];
-            if(values[i]>maxValue){
+            if(values[i]>=maxValue){
                 maxValue = values[i];
                 maxIndex = i;
                 Log.d(TAG,"maxValue:"+maxValue);
@@ -73,6 +81,8 @@ public class PieChartView extends View{
         paint = new Paint();
         path = new Path();
         paint.setAntiAlias(true);/*开启抗锯齿*/
+
+
     }
 
     @Override
@@ -86,11 +96,15 @@ public class PieChartView extends View{
             Log.d("PieChart","width:"+width);
             Log.d("PieChart","height:"+height);
             Log.d("PieChart","R:"+r);
+            offset = r * OFFSET_PERCENT;
+            textSize = r * TEXT_PERCENT;
+            text2strip = r * (TEXT2STRIP_PERCENT+STRIP2_PERCENT);
+
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(textColor);
             paint.setStrokeWidth(DensityUtil.px2dip(getContext(),5));
-            textPaint.setTextSize(DensityUtil.px2dip(getContext(),100));
-            int R = r- DensityUtil.px2dip(getContext(),250);
+            textPaint.setTextSize(textSize);
+            int R = (int)(r- r*0.15f);
 
             /*绘制数值*/
             for (int i=0; i<values.length; i++){
@@ -106,23 +120,23 @@ public class PieChartView extends View{
                 yOffset = maxIndex==i?offset*(float)Math.sin(Math.toRadians(startAngle+angle/2)):0;
                 Log.d(TAG,"xOffset:"+xOffset);
                 Log.d(TAG,"yOffset:"+yOffset);
-                x = (R+stripValue1)*(float)Math.cos(Math.toRadians(startAngle+angle/2));
-                y = (R+stripValue1)*(float)Math.sin(Math.toRadians(startAngle+angle/2));
+                x = (R)*(float)Math.cos(Math.toRadians(startAngle+angle/2));
+                y = (R)*(float)Math.sin(Math.toRadians(startAngle+angle/2));
                 path.moveTo(width/2+xOffset,height/2+yOffset);
                 path.rLineTo(x,y);
                 canvas.drawPath(path,paint);
                 if(startAngle+angle/2>90&&startAngle+angle/2<270){
-                    path.rLineTo(-stripValue2,0);
+                    path.rLineTo(-stripValue,0);
                     textPaint.setTextAlign(Paint.Align.RIGHT);
-                    canvas.drawText(String.format("%.2f", percent*100)+"%",width/2+x-DensityUtil.px2dip(getContext(),100)+xOffset,height/2+y+yOffset,textPaint);
+                    canvas.drawText(String.format("%.2f", percent*100)+"%",width/2+x-text2strip+xOffset,height/2+y+yOffset,textPaint);
                 }else {
-                    path.rLineTo(stripValue2,0);
+                    path.rLineTo(stripValue,0);
                     textPaint.setTextAlign(Paint.Align.LEFT);
-                    canvas.drawText((String.format("%.2f", percent*100))+"%",width/2+x+DensityUtil.px2dip(getContext(),100)+xOffset,height/2+y+yOffset,textPaint);
+                    canvas.drawText((String.format("%.2f", percent*100))+"%",width/2+x+text2strip+xOffset,height/2+y+yOffset,textPaint);
                 }
                 canvas.drawPath(path,paint);
             }
-            Log.d(TAG,"-------------------------绘制饼图--------------------------");
+
             /*绘制饼图*/
             startAngle=endAngle=angle=0;
             paint.setStyle(Paint.Style.FILL);
@@ -137,10 +151,10 @@ public class PieChartView extends View{
                 Log.d(TAG,"Oangle:"+angle);
                 xOffset = maxIndex==i?offset*(float)Math.cos(Math.toRadians(startAngle+angle/2)):0;
                 yOffset = maxIndex==i?offset*(float)Math.sin(Math.toRadians(startAngle+angle/2)):0;
-                oval.left=width/2-r+DensityUtil.px2dip(getContext(),250)+xOffset;  //左边
-                oval.top=height/2-r+DensityUtil.px2dip(getContext(),250)+yOffset;  //上边
-                oval.right=width/2+r-DensityUtil.px2dip(getContext(),250)+xOffset; //右边
-                oval.bottom=height/2+r-DensityUtil.px2dip(getContext(),250)+yOffset;
+                oval.left=width/2-r+r*PIE_PERCENT+xOffset;  //左边
+                oval.top=height/2-r+r*PIE_PERCENT+yOffset;  //上边
+                oval.right=width/2+r-r*PIE_PERCENT+xOffset; //右边
+                oval.bottom=height/2+r-r*PIE_PERCENT+yOffset;
                 Log.d(TAG+"C","i:"+i);
                 Log.d(TAG+"C","colorIndex:"+i%5);
                 /*防止最后一部分与第一部分的颜色重叠*/
@@ -157,3 +171,4 @@ public class PieChartView extends View{
 
     }
 }
+
