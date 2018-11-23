@@ -46,9 +46,17 @@ public class PieChartView extends View{
     float offset=0;
     float textSize = 0;
 
+    public void setDatas(String[] datas) {
+        this.datas = datas;
+    }
+
+    String[] datas;
+
     public void setValues(float[] values) {
         this.values = values;
     }
+
+
 
     public PieChartView(Context context){
         super(context);
@@ -88,7 +96,7 @@ public class PieChartView extends View{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(values.length>0){
+        if(values.length>0&&values.length==datas.length){
             init();
             int width = getWidth();
             int height = getHeight();
@@ -137,7 +145,7 @@ public class PieChartView extends View{
                 canvas.drawPath(path,paint);
             }
 
-            /*绘制饼图*/
+            /*绘制饼图和文字*/
             startAngle=endAngle=angle=0;
             paint.setStyle(Paint.Style.FILL);
             RectF oval=new RectF();                     //RectF对象
@@ -166,9 +174,13 @@ public class PieChartView extends View{
                 }
                 Log.d(TAG,"color:"+colors[i%5]);
                 canvas.drawArc(oval,startAngle,angle,true,paint);
+                x = (R)*(float)Math.cos(Math.toRadians(startAngle+angle/2));
+                y = (R)*(float)Math.sin(Math.toRadians(startAngle+angle/2));
+                textPaint.setTextAlign(Paint.Align.CENTER);
+                textPaint.setColor(0xFFFFFFFF);
+                canvas.drawText(datas[i],width/2+x/2,height/2+y/2,textPaint);
             }
         }
-
     }
 }
 
