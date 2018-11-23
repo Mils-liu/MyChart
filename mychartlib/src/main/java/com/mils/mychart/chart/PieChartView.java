@@ -26,7 +26,7 @@ public class PieChartView extends View{
     private float x,y;
     float sum = 0;/*所有数值的总和，用于计算百分比*/
     /*颜色*/
-    int[] colors = {ChartColor.PEACOCKBLUE,ChartColor.TOMATORED,ChartColor.TURKEYJADE,ChartColor.MINT,ChartColor.LAKEPURPLE};
+    int[] colors = {ChartColor.RED,ChartColor.ORANGERED,ChartColor.ORANGE,ChartColor.ORANGEYELLOW,ChartColor.YELLOW,ChartColor.YELLOWGREEN,ChartColor.GREEN,ChartColor.BLUEGREEN,ChartColor.BLUE,ChartColor.BLUEVIOLET,ChartColor.VIOLET,ChartColor.VIOLETRED};
     final int textColor = Color.GRAY;/*文字颜色*/
     float stripValue = DensityUtil.dip2px(getContext(),8);/*第二折线长度*/
     float[] values;/*传入的数值*/
@@ -166,18 +166,17 @@ public class PieChartView extends View{
                 Log.d(TAG+"C","i:"+i);
                 Log.d(TAG+"C","colorIndex:"+i%5);
                 /*防止最后一部分与第一部分的颜色重叠*/
-                if (i==values.length-1&&i%5==0){
+                if (i==values.length-1&&i%ChartColor.COLORNUMMBER==0){
                     Log.d(TAG+"C","!!!");
-                    paint.setColor(colors[i%5+1]);
+                    paint.setColor(colors[i%ChartColor.COLORNUMMBER+1]);
                 }else {
-                    paint.setColor(colors[i%5]);
+                    paint.setColor(colors[i%ChartColor.COLORNUMMBER]);
                 }
-                Log.d(TAG,"color:"+colors[i%5]);
+                Log.d(TAG,"color:"+colors[i%ChartColor.COLORNUMMBER]);
                 canvas.drawArc(oval,startAngle,angle,true,paint);
                 x = (R)*(float)Math.cos(Math.toRadians(startAngle+angle/2));
                 y = (R)*(float)Math.sin(Math.toRadians(startAngle+angle/2));
                 textPaint.setTextAlign(Paint.Align.CENTER);
-                textPaint.setColor(0xFFFFFFFF);
                 canvas.drawText(datas[i],width/2+x/2,height/2+y/2,textPaint);
             }
         }
