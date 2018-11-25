@@ -8,13 +8,17 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.mils.mychart.color.ChartColor;
+import com.mils.mychart.util.DensityUtil;
 
 /**
  * Created by Administrator on 2018/9/24.
  */
 
 public class BarGraphView extends View{
-    float margin = 0;/*整体柱状图边距*/
+    float leftOffset = 0;
+    float marginLeft = DensityUtil.dip2px(getContext(),10);
+    float marginBottom = DensityUtil.dip2px(getContext(),10);
+    float textSize = DensityUtil.dip2px(getContext(),10);
     float spacing = 0;/*柱子之间的边距*/
     float startXposition = 0;/*第一个柱状图左下角x初始值*/
     float startYposition = 0;/*第一个柱状图左下角y初始值*/
@@ -28,6 +32,8 @@ public class BarGraphView extends View{
     String[] datas;
     float[] values;/*传入的数值*/
     float max = 0;/*最大数值*/
+    String unit = "";/*单位*/
+    String Yname = "";
 
     public BarGraphView(Context context){
         super(context);
@@ -48,6 +54,11 @@ public class BarGraphView extends View{
         this.datas = datas;
     }
 
+    public void setYaxis(String unit, String Yname){
+        this.unit = unit;
+        this.Yname = Yname;
+    }
+
     private void init(){
         /*获取最大数值*/
         for (float value : values) {
@@ -57,10 +68,10 @@ public class BarGraphView extends View{
         }
         width = getWidth();
         height = getHeight();
-        margin = Math.min(width,height)*0.05f;
-        spacing = (width-2*margin)*0.3f/(values.length+1);
-        bgWidth = (width-2*margin)*0.7f/(values.length);
-        maxHeight = height-5*margin;
+        spacing = (width-2*marginLeft)*0.3f/(values.length+1);
+        bgWidth = (width-2*marginLeft)*0.7f/(values.length);
+        maxHeight = height-5*marginBottom;
+        leftOffset = (unit!=""&&Yname!="") ? DensityUtil.dip2px(getContext(),10):0;
     }
 
     @Override
@@ -72,19 +83,24 @@ public class BarGraphView extends View{
             path = new Path();
             paint = new Paint();
             textPaint = new Paint();
-            textPaint.setTextSize(margin);
+            textPaint.setTextSize(textSize);
             textPaint.setTextAlign(Paint.Align.CENTER);
             paint.setStyle(Paint.Style.STROKE);
-            path.moveTo(margin,margin);
-            path.rLineTo(0,height-4*margin);
-            path.rLineTo(width-2*margin,0);
+            path.moveTo(marginLeft+leftOffset,marginBottom);
+            path.rLineTo(0,height-3*marginBottom);
+            canvas.drawPath(path,paint);
+            if(unit!=""&&Yname!=null){
+                canvas.drawTextOnPath(Yname+"/"+unit,path,-(height-10*marginBottom)/2,textSize*3/2,textPaint);
+            }
+            path.rLineTo(width-2*marginLeft,0);
             canvas.drawPath(path,paint);
 
             /*绘制柱子和文字*/
-            startXposition = margin+spacing;
-            startYposition = margin+height-4*margin;
+            startXposition = marginLeft+spacing;
+            startYposition = marginBottom+height-3*marginBottom;
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(ChartColor.LAKEPURPLE);
+            paint.setColor(ChartColor.VIOLETRED);
+
             /*柱子的左上角与右下角*/
             float left = 0;
             float top = 0;
@@ -97,8 +113,8 @@ public class BarGraphView extends View{
                 right = startXposition + bgWidth;
                 bottom = startYposition;
                 canvas.drawRect(left,top,right,bottom,paint);
-                canvas.drawText(String.valueOf(value),startXposition+bgWidth/2,top-margin/2,textPaint);
-                canvas.drawText(datas[i],startXposition+bgWidth/2,startYposition+margin*3/2,textPaint);
+                canvas.drawText(String.valueOf(value),startXposition+bgWidth/2,top-marginBottom/2,textPaint);
+                canvas.drawText(datas[i],startXposition+bgWidth/2,startYposition+marginBottom*3/2,textPaint);
                 startXposition = startXposition + spacing + bgWidth;
                 i++;
             }
