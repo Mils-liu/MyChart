@@ -34,6 +34,7 @@ public class BarGraphView extends View{
     float max = 0;/*最大数值*/
     String unit = "";/*单位*/
     String Yname = "";
+    int chartColor = ChartColor.VIOLETRED;
 
     public BarGraphView(Context context){
         super(context);
@@ -57,6 +58,10 @@ public class BarGraphView extends View{
     public void setYaxis(String unit, String Yname){
         this.unit = unit;
         this.Yname = Yname;
+    }
+
+    public void setChartColor(int chartColor){
+        this.chartColor = chartColor;
     }
 
     private void init(){
@@ -89,6 +94,7 @@ public class BarGraphView extends View{
             path.moveTo(marginLeft+leftOffset,marginBottom);
             path.rLineTo(0,height-3*marginBottom);
             canvas.drawPath(path,paint);
+
             if(unit!=""&&Yname!=null){
                 canvas.drawTextOnPath(Yname+"/"+unit,path,-(height-10*marginBottom)/2,textSize*3/2,textPaint);
             }
@@ -99,7 +105,7 @@ public class BarGraphView extends View{
             startXposition = marginLeft+spacing+leftOffset;
             startYposition = marginBottom+height-3*marginBottom;
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(ChartColor.VIOLETRED);
+            paint.setColor(chartColor);
 
             /*柱子的左上角与右下角*/
             float left = 0;
