@@ -57,5 +57,5 @@ bgView.setYaxis("分","分数");
 ````java
 bgView.setChartColor(ChartColor.ORANGEYELLOW);
 ````
-###
+### END
 简书地址：https://www.jianshu.com/p/07b6a6dd1e13
