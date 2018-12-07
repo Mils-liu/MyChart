@@ -96,7 +96,7 @@ public class BarGraphView extends View{
             canvas.drawPath(path,paint);
 
             /*绘制柱子和文字*/
-            startXposition = marginLeft+spacing;
+            startXposition = marginLeft+spacing+leftOffset;
             startYposition = marginBottom+height-3*marginBottom;
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(ChartColor.VIOLETRED);
