@@ -56,11 +56,11 @@ public class PieChartView extends View{
     }
 
     public void setTextSize(float textSize) {
-        this.textSize = textSize;
+        this.textSize = DensityUtil.dip2px(getContext(),textSize);
     }
 
     public void setPercentSize(float percentSize) {
-        this.percentSize = percentSize;
+        this.percentSize = DensityUtil.dip2px(getContext(),percentSize);
     }
 
     public void setDatas(String[] datas) {
