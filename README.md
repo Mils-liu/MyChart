@@ -1,6 +1,7 @@
 # MyChart
 
-![](https://upload-images.jianshu.io/upload_images/7019098-d79a4dc285b487ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/270/format/webp)
+![饼图](https://upload-images.jianshu.io/upload_images/7019098-caf1524f3d731f59.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/420/format/webp)
+![柱状图](https://upload-images.jianshu.io/upload_images/7019098-9b0000bda24ed307.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/420/format/webp)
 ### 1.添加依赖
 ````java
 allprojects{
