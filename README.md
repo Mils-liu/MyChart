@@ -31,7 +31,7 @@ pcView.setDatas(datas);
 pcView.setPercentSize(10f);
 pcView.setTextSize(10f);
 ````
-### 3、柱状图
+### 3.柱状图
 在xml里添加布局
 ````java
 <com.mils.mychart.chart.BarGraphView
